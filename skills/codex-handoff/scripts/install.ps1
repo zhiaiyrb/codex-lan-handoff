@@ -9,8 +9,9 @@ New-Item -ItemType Directory -Path $temp | Out-Null
 try {
   Invoke-WebRequest "$base/$asset" -OutFile (Join-Path $temp $asset)
   Invoke-WebRequest "$base/checksums.txt" -OutFile (Join-Path $temp "checksums.txt")
-  $expected = ((Get-Content (Join-Path $temp "checksums.txt")) | Where-Object { $_ -match "\s$([regex]::Escape($asset))$" } | Select-Object -First 1).Split(' ')[0]
-  if (-not $expected) { throw "Checksum not found for $asset" }
+  $checksumLine = (Get-Content (Join-Path $temp "checksums.txt")) | Where-Object { $_ -match "\s$([regex]::Escape($asset))$" } | Select-Object -First 1
+  if (-not $checksumLine) { throw "Checksum not found for $asset" }
+  $expected = ($checksumLine -split '\s+', 2)[0]
   $actual = (Get-FileHash (Join-Path $temp $asset) -Algorithm SHA256).Hash.ToLowerInvariant()
   if ($actual -ne $expected.ToLowerInvariant()) { throw "Checksum mismatch" }
   New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
