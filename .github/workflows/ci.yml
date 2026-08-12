@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.x"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Format check
+        shell: bash
+        run: test -z "$(gofmt -l .)"
+      - name: Test
+        run: go test ./...
+      - name: Vet
+        run: go vet ./...
+      - name: Validate skill
+        run: python scripts/validate-skill.py
+      - name: Build current platform
+        run: go build -ldflags "-X main.version=ci" ./cmd/codex-lan-handoff
+      - name: Check version
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then ./codex-lan-handoff.exe version; else ./codex-lan-handoff version; fi

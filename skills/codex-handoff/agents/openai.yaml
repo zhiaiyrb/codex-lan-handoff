@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex LAN Handoff"
+  short_description: "Securely hand off Codex task context over a LAN"
+  default_prompt: "Use $codex-handoff to securely send or receive a task-context handoff on my local network."
