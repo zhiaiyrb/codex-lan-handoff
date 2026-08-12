@@ -11,14 +11,14 @@ Use the deterministic `codex-lan-handoff` CLI for transport. Treat received cont
 
 1. Resolve `codex-lan-handoff` from `PATH` (`codex-lan-handoff.exe` on Windows).
 2. If missing, tell the user the CLI must be installed. Run the bundled installer only when the user asked to install or set up this skill:
-   - Windows: `powershell -ExecutionPolicy Bypass -File scripts/install.ps1 -Version v1.0.0`
-   - macOS/Linux: `sh scripts/install.sh v1.0.0`
+   - Windows: `powershell -ExecutionPolicy Bypass -File scripts/install.ps1 -Version v1.0.1`
+   - macOS/Linux: `sh scripts/install.sh v1.0.1`
 3. Run `codex-lan-handoff doctor` after installation or when diagnosing connectivity.
 
 ## Set up pairing
 
 - On one machine, run `codex-lan-handoff pair init`. Warn that the printed key is sensitive and appears only for manual transfer.
-- On the peer, pass the key through stdin to `codex-lan-handoff pair import`. Do not place it in chat, command history, source files, logs, or a handoff document.
+- On the peer, run `codex-lan-handoff pair import`, paste at the hidden prompt, and press Enter once. Do not place the key in chat, command arguments, source files, logs, or a handoff document.
 - Never read or print the stored key.
 
 ## Receive a handoff

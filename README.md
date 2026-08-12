@@ -9,7 +9,7 @@ This is an independent community project and is not an OpenAI product.
 Ask Codex to install:
 
 ```text
-https://github.com/zhiaiyrb/codex-lan-handoff/tree/v1.0.0/skills/codex-handoff
+https://github.com/zhiaiyrb/codex-lan-handoff/tree/v1.0.1/skills/codex-handoff
 ```
 
 Then ask the installed skill to set up the CLI. The installer downloads the matching single-file binary from the pinned release and verifies its SHA-256 checksum.
@@ -22,11 +22,13 @@ On the first machine:
 codex-lan-handoff pair init
 ```
 
-Transfer the displayed key privately and import it through stdin on the second machine:
+Transfer the displayed key privately. On the second machine, start the hidden prompt:
 
 ```sh
 codex-lan-handoff pair import
 ```
+
+Paste the key and press Enter once. The key is not echoed. Piped input remains supported for automation.
 
 Never paste the key into a Codex conversation or store it in a repository.
 
@@ -56,7 +58,7 @@ The receiver verifies the encrypted document, saves it to its user-level inbox, 
 
 ## Development
 
-Requires Go 1.22 or newer.
+Requires Go 1.23 or newer.
 
 ```sh
 go test ./...

@@ -1,4 +1,4 @@
-param([string]$Version = "v1.0.0", [string]$InstallDir = "$env:LOCALAPPDATA\Programs\codex-lan-handoff")
+param([string]$Version = "v1.0.1", [string]$InstallDir = "$env:LOCALAPPDATA\Programs\codex-lan-handoff")
 $ErrorActionPreference = "Stop"
 $repo = "zhiaiyrb/codex-lan-handoff"
 $arch = switch ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()) { "X64" { "amd64" } "Arm64" { "arm64" } default { throw "Unsupported architecture" } }

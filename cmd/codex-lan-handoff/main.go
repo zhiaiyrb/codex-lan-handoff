@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"flag"
@@ -19,6 +20,7 @@ import (
 	"github.com/zhiaiyrb/codex-lan-handoff/internal/handoff"
 	"github.com/zhiaiyrb/codex-lan-handoff/internal/store"
 	"github.com/zhiaiyrb/codex-lan-handoff/internal/transport"
+	"golang.org/x/term"
 )
 
 var version = "dev"
@@ -66,7 +68,7 @@ func usage() {
 Commands:
   setup
   pair init
-  pair import [--key VALUE]        (reads stdin when --key is omitted)
+  pair import [--key VALUE]        (paste securely and press Enter)
   receive --from IP [--port 47128] [--timeout 10m]
   send --to IP --file handoff.json [--port 47128]
   inbox latest
@@ -104,11 +106,16 @@ func pair(args []string) error {
 		}
 		value := strings.TrimSpace(*key)
 		if value == "" {
-			b, err := io.ReadAll(io.LimitReader(os.Stdin, 4096))
+			readValue, err := readPairKey(os.Stdin, term.IsTerminal(int(os.Stdin.Fd())), func() ([]byte, error) {
+				fmt.Fprint(os.Stderr, "Paste the shared key and press Enter (input is hidden): ")
+				b, readErr := term.ReadPassword(int(os.Stdin.Fd()))
+				fmt.Fprintln(os.Stderr)
+				return b, readErr
+			})
 			if err != nil {
 				return err
 			}
-			value = strings.TrimSpace(string(b))
+			value = readValue
 		}
 		if err := config.SaveKey(value); err != nil {
 			return err
@@ -118,6 +125,23 @@ func pair(args []string) error {
 	default:
 		return errors.New("pair requires init or import")
 	}
+}
+
+func readPairKey(r io.Reader, interactive bool, readHidden func() ([]byte, error)) (string, error) {
+	if interactive {
+		b, err := readHidden()
+		if err != nil {
+			return "", fmt.Errorf("read shared key: %w", err)
+		}
+		return strings.TrimSpace(string(b)), nil
+	}
+	// Read one line instead of waiting for EOF. This makes both `echo key | ...`
+	// and interactive shells that are not detectable as terminals finish on Enter.
+	line, err := bufio.NewReader(io.LimitReader(r, 4096)).ReadString('\n')
+	if err != nil && !errors.Is(err, io.EOF) {
+		return "", fmt.Errorf("read shared key: %w", err)
+	}
+	return strings.TrimSpace(line), nil
 }
 
 func receive(args []string) error {

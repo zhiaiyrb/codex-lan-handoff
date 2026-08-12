@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-version="${1:-v1.0.0}"
+version="${1:-v1.0.1}"
 install_dir="${CODEX_HANDOFF_INSTALL_DIR:-$HOME/.local/bin}"
 repo="zhiaiyrb/codex-lan-handoff"
 os=$(uname -s | tr '[:upper:]' '[:lower:]')

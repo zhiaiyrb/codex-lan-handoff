@@ -6,13 +6,13 @@ The v1 workflow transfers task context only. It does not synchronize repositorie
 
 ## Install
 
-Install `skills/codex-handoff` with the Codex skill installer, then run the bundled OS installer. Installers are pinned to `v1.0.0`, download the matching release archive, and verify `checksums.txt`.
+Install `skills/codex-handoff` with the Codex skill installer, then run the bundled OS installer. Installers are pinned to `v1.0.1`, download the matching release archive, and verify `checksums.txt`.
 
 Run `codex-lan-handoff doctor` to inspect the version, platform, configuration directory, pairing status, addresses, default port, and inbox state.
 
 ## Pair
 
-Run `pair init` on either machine. Import the printed value on the peer using `pair import` and stdin. The key is stored below the operating system user configuration directory. Never send it in a handoff.
+Run `pair init` on either machine. On the peer, run `pair import`, paste the key into the hidden prompt, and press Enter once. No Ctrl+Z/Ctrl+D is required. Piped stdin remains supported for automation and consumes only its first line. The key is stored below the operating system user configuration directory. Never send it in a handoff.
 
 ## Receive and send
 
